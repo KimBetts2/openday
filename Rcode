@@ -23,12 +23,6 @@ mean(data$ACE_outcome)
 #and other continuous variables.
 boxplot(data$Body.Weight~data$ACE_outcome)
 
-#Lastly, to assess the association between our categorical outcome  
-#with binary predictors, we can use a cross-classification table.
-#Use the code below to check for an association with asthma,
-#then experiment with some more.
-prop.table(table(data$Asthma,ACE=data$ACE_outcome),1)
-
 
 ###########
 #Activity 2
