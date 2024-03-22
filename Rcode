@@ -1,0 +1,80 @@
+#R code for Open Day activity - March 2024
+
+#Start by setting your working directory
+
+###########
+#Activity 1
+###########
+
+data<-read.csv("Hospital_adverse_events_data.csv", na.strings = "")
+
+#Firstly, let's use the code below to determine the number of
+#patients with the outcome.
+table(data$ACE_outcome)
+
+#Because the outcome is coded 0=no and 1=yes we find that 759
+#patients experienced an ACE. Next, we can determine the proportion
+#of patients with the outcome using the code below.
+mean(data$ACE_outcome)
+
+#Next, box plots display the relationship between a categorical
+#variable (like our outcome) with a continuous one (e.g., weight).
+#Run the code below, then create some box plots between the outcome
+#and other continuous variables.
+boxplot(data$Body.Weight~data$ACE_outcome)
+
+#Lastly, to assess the association between our categorical outcome  
+#with binary predictors, we can use a cross-classification table.
+#Use the code below to check for an association with asthma,
+#then experiment with some more.
+prop.table(table(data$Asthma,ACE=data$ACE_outcome),1)
+
+
+###########
+#Activity 2
+###########
+
+data<-read.csv("Hospital_adverse_events_data.csv", na.strings = "")
+
+#For K-means analysis, we make a smaller data set of a few interesting 
+#variables among patients with ACE (click on data to view the variables)
+data<-data[which(data$ACE_outcome==1),c(2,8,10,11,13,17)]
+
+#Install and load a package for performing K-means analysis
+install.packages("factoextra", dependencies=TRUE)
+library(factoextra)
+
+#Now lets see what we find if we search for three clusters
+#We use the kmeans function and specify the data and number of clusters
+set.seed(123)
+clust.3<-kmeans(data,centers = 3)
+
+#Next, we inspect how the clusters differ by the variables and how many
+#patients belong to each cluster
+clust.3$centers
+table(clust.3$cluster)
+
+
+
+###########
+#Activity 3
+###########
+
+data<-read.csv("Hospital_adverse_events_data.csv", na.strings = "")
+
+#Lets start by removing some variables we don't want to include
+#and rename one to make its name smaller
+data<-data[,c(-1,-3:-5, -217,-218)]
+names(data)[137]<-"salmeterol"
+
+#Next, lets install and load two packages we need for this activity
+install.packages("rpart")
+install.packages("rpart.plot")
+library(rpart)
+library(rpart.plot)
+
+#next we run the algorithm to construct the tree
+tree.mod<-rpart(formula=ACE_outcome~.,data=data, cp=0.0015)
+
+#Now plot the tree
+rpart.plot(tree.mod, type=5)
